@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline - Newspaper Headline Aggregator</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --text-color: #1f2937;
+            --bg-color: #ffffff;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #3b82f6;
+            --text-color: #f3f4f6;
+            --bg-color: #111827;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .offline-container {
+            max-width: 600px;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background-color: var(--bg-color);
+        }
+
+        .offline-icon {
+            font-size: 4rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+        p {
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        .cached-content {
+            margin-top: 2rem;
+            padding: 1rem;
+            border: 1px solid var(--primary-color);
+            border-radius: 0.5rem;
+        }
+
+        .cached-content h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .cached-articles {
+            text-align: left;
+        }
+
+        .cached-article {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .cached-article:last-child {
+            border-bottom: none;
+        }
+
+        .retry-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .retry-button:hover {
+            background-color: var(--primary-color);
+            opacity: 0.9;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <div class="offline-icon">📡</div>
+        <h1>You're Offline</h1>
+        <p>Don't worry! You can still access your cached news articles while you're offline.</p>
+        
+        <div class="cached-content">
+            <h2>Last Cached Articles</h2>
+            <div class="cached-articles" id="cachedArticles">
+                <!-- Cached articles will be loaded here -->
+            </div>
+        </div>
+
+        <button class="retry-button" onclick="window.location.reload()">
+            Try Again
+        </button>
+    </div>
+
+    <script>
+        // Load cached articles from IndexedDB
+        async function loadCachedArticles() {
+            try {
+                const db = await openDB();
+                const tx = db.transaction('news', 'readonly');
+                const store = tx.objectStore('news');
+                const data = await store.get('latest');
+
+                if (data && data.articles) {
+                    const cachedArticlesContainer = document.getElementById('cachedArticles');
+                    data.articles.slice(0, 5).forEach(article => {
+                        const articleElement = document.createElement('div');
+                        articleElement.className = 'cached-article';
+                        articleElement.innerHTML = `
+                            <h3>${article.title}</h3>
+                            <p>${article.description || ''}</p>
+                        `;
+                        cachedArticlesContainer.appendChild(articleElement);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading cached articles:', error);
+            }
+        }
+
+        // Helper function to open IndexedDB
+        function openDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open('NewsDB', 1);
+                
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => resolve(request.result);
+                
+                request.onupgradeneeded = (event) => {
+                    const db = event.target.result;
+                    if (!db.objectStoreNames.contains('news')) {
+                        db.createObjectStore('news');
+                    }
+                };
+            });
+        }
+
+        // Load cached articles when the page loads
+        window.addEventListener('load', loadCachedArticles);
+
+        // Check for online status
+        window.addEventListener('online', () => {
+            window.location.reload();
+        });
+    </script>
+</body>
+</html> 

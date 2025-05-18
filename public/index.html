@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newspaper Headline Aggregator</title>
+    <script>
+        // Initialize theme immediately to prevent flash of wrong theme
+        (function() {
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+            // Set meta theme-color
+            const metaThemeColor = document.createElement('meta');
+            metaThemeColor.name = 'theme-color';
+            metaThemeColor.content = theme === 'light' ? '#ffffff' : '#111827';
+            document.head.appendChild(metaThemeColor);
+        })();
+    </script>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <!-- Live News Ticker -->
+    <div class="news-ticker">
+        <div class="ticker-content"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i class="fas fa-newspaper"></i>
+            <span>News Aggregator</span>
+        </div>
+        <div class="nav-links">
+            <a href="#" class="active" data-category="general">Home</a>
+            <a href="#" data-category="business">Business</a>
+            <a href="#" data-category="technology">Technology</a>
+            <a href="#" data-category="sports">Sports</a>
+            <a href="#" data-category="entertainment">Entertainment</a>
+        </div>
+        <div class="nav-actions">
+            <button id="themeToggle" class="theme-toggle">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button id="viewToggle" class="view-toggle">
+                <i class="fas fa-th-large"></i>
+            </button>
+            <button id="languageToggle" class="language-toggle">
+                हिंदी
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="hero-content">
+            <h1>Stay Informed with the Latest News</h1>
+            <p>Get real-time updates from multiple sources</p>
+            <div class="filters">
+                <div class="filter-group">
+                    <div class="filter-inputs">
+                        <input type="text" id="searchInput" placeholder="Search news...">
+                        <select id="sourceFilter">
+                            <option value="">All Sources</option>
+                        </select>
+                        <select id="categoryFilter">
+                            <option value="">All Categories</option>
+                        </select>
+                        <select id="sentimentFilter">
+                            <option value="">All Sentiments</option>
+                            <option value="very_positive">Very Positive</option>
+                            <option value="positive">Positive</option>
+                            <option value="negative">Negative</option>
+                            <option value="very_negative">Very Negative</option>
+                            <option value="neutral">Neutral</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <div class="content-wrapper">
+            <!-- Main News Grid -->
+            <div class="news-grid" id="newsGrid"></div>
+
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <!-- Daily Digest -->
+                <div class="digest-card">
+                    <h3>Daily Digest</h3>
+                    <div class="digest-content"></div>
+                </div>
+
+                <!-- Trending Topics -->
+                <div class="trending-card">
+                    <h3>Trending Topics</h3>
+                    <div class="trending-content"></div>
+                </div>
+
+                <!-- Read Later -->
+                <div class="read-later-card">
+                    <h3>Read Later</h3>
+                    <div class="read-later-content"></div>
+                </div>
+
+                <!-- Weather Widget -->
+                <div class="weather-card">
+                    <h3>Weather</h3>
+                    <div class="weather-content">
+                        <div class="weather-icon"></div>
+                        <div class="weather-info"></div>
+                    </div>
+                </div>
+
+                <!-- Newsletter Subscription -->
+                <div class="newsletter-card">
+                    <h3>Stay Updated</h3>
+                    <p>Get daily news digest in your inbox</p>
+                    <form id="newsletterForm">
+                        <input type="email" placeholder="Enter your email">
+                        <button type="submit">Subscribe</button>
+                    </form>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>About Us</h4>
+                <p>Your trusted source for aggregated news from multiple sources.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Categories</a></li>
+                    <li><a href="#">Search</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Connect With Us</h4>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Newspaper Headline Aggregator. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful');
+                    })
+                    .catch(err => {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
+    </script>
+    <script src="app.js"></script>
+</body>
+</html> 

@@ -56,12 +56,15 @@ cd newspaper-headline-aggregator
 npm install
 ```
 
-3. Create a `.env` file in the root directory:
+3. Set up environment variables:
+   - Create a new file named `.env` in the root directory
+   - Copy the following variables and fill in your API keys:
 ```env
 PORT=3000
 NEWS_API_KEY=your_newsapi_key
 GNEWS_API_KEY=your_gnews_key
 ```
+   - Note: The `.env` file is gitignored for security. Never commit your actual API keys to the repository.
 
 4. Start the development server:
 ```bash

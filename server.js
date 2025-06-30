@@ -620,27 +620,11 @@ app.use((err, req, res, next) => {
 
 // Start server with error handling
 const startServer = () => {
-    try {
-        app.listen(port, () => {
-            console.log(`Server running at http://localhost:${port}`);
-            console.log('Environment Variables:');
-            console.log('PORT:', process.env.PORT);
-            console.log('NEWS_API_KEY:', NEWS_API_KEY ? 'Present' : 'Missing');
-            console.log('GNEWS_API_KEY:', GNEWS_API_KEY ? 'Present' : 'Missing');
-            console.log('API Configuration:');
-            console.log('NEWS_API_BASE_URL:', NEWS_API_BASE_URL);
-            console.log('GNEWS_API_BASE_URL:', GNEWS_API_BASE_URL);
-        }).on('error', (error) => {
-            console.error('Server startup error:', error);
-            if (error.code === 'EADDRINUSE') {
-                console.error(`Port ${port} is already in use. Please try a different port or kill the process using this port.`);
-            }
-            process.exit(1);
-        });
-    } catch (error) {
-        console.error('Failed to start server:', error);
-        process.exit(1);
-    }
+    app.listen(port, () => {
+        console.log(`Server running at http://localhost:${port}`);
+    });
 };
 
-startServer(); 
+// startServer();
+
+module.exports = app; 

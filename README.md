@@ -73,6 +73,75 @@ npm run dev
 
 5. Open your browser and navigate to `http://localhost:3000`
 
+## Deploying to Vercel
+
+This project can be deployed to Vercel. It contains a Node.js backend, a Python backend, and a static frontend. The `vercel.json` file is configured to deploy the project correctly as serverless functions.
+
+### Setup
+
+1.  **Push to GitHub**: Make sure your code is pushed to a GitHub repository.
+
+2.  **Import to Vercel**:
+    *   On your Vercel dashboard, click "Add New Project".
+    *   Import the repository from your GitHub account.
+    *   Vercel will automatically detect the `package.json` and `vercel.json` files.
+
+3.  **Configure Environment Variables**:
+    *   In Vercel's project settings, navigate to "Environment Variables".
+    *   Add the following variables:
+        *   `NEWS_API_KEY`: Your key for NewsAPI.org.
+        *   `GNEWS_API_KEY`: Your key for GNews.
+
+4.  **Deploy**: Click the "Deploy" button. Vercel will build and deploy your application.
+
+### `vercel.json` Explained
+
+The `vercel.json` file is crucial for a successful deployment of this mixed-language project on Vercel.
+
+```json
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "server.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "server.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/py/(.*)",
+      "dest": "/server.py"
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/public/$1"
+    }
+  ]
+}
+```
+
+*   **`builds`**: This section tells Vercel how to build the different parts of the project.
+    *   `@vercel/node` is used for `server.js`.
+    *   `@vercel/python` is used for `server.py`.
+*   **`routes`**: This section sets up rewrite rules to direct incoming requests to the appropriate serverless function.
+    *   Requests to `/api/py/` go to the Python server.
+    *   Requests to `/api/` go to the Node.js server.
+    *   All other requests serve the static files from the `public` directory.
+
+### About the Python Server
+
+Currently, the frontend application (`public/app.js`) is set up to communicate only with the Node.js server (`server.js`). The Python server (`server.py`) provides an alternative backend implementation but is not currently used by the frontend.
+
+If you want to use the Python server, you will need to update the API requests in `public/app.js` to send requests to the `/api/py/news` endpoint and ensure the Python server provides all the necessary endpoints that the frontend requires.
+
 ## 📁 Project Structure
 
 ```
@@ -138,7 +207,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
 3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
+4. Push to the a branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
 ## 📧 Contact

@@ -10,7 +10,7 @@ from sentiment_analyzer import sentiment_analyzer
 app = Flask(__name__)
 CORS(app)
 
-@app.route('/api/news', methods=['GET'])
+@app.route('/api/py/news', methods=['GET'])
 def get_news():
     try:
         # Get query parameters

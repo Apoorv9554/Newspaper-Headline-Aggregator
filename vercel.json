@@ -4,24 +4,12 @@
     {
       "src": "server.js",
       "use": "@vercel/node"
-    },
-    {
-      "src": "server.py",
-      "use": "@vercel/python"
     }
   ],
   "routes": [
     {
-      "src": "/api/py/(.*)",
-      "dest": "/server.py"
-    },
-    {
-      "src": "/api/(.*)",
-      "dest": "/server.js"
-    },
-    {
       "src": "/(.*)",
-      "dest": "/public/$1"
+      "dest": "server.js"
     }
   ]
 } 

@@ -625,6 +625,6 @@ const startServer = () => {
     });
 };
 
-// startServer();
+startServer();
 
 module.exports = app; 

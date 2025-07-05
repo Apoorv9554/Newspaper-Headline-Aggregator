@@ -319,7 +319,7 @@ const updateWeatherWidget = async () => {
         const timeoutId = setTimeout(() => controller.abort(), 10000);
 
         const response = await fetch(
-            `${WEATHER_API_BASE_URL}/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=${WEATHER_API_KEY}`,
+            `${API_BASE_URL}/weather?lat=${latitude}&lon=${longitude}`,
             { signal: controller.signal }
         );
 
@@ -395,7 +395,7 @@ const setManualLocation = async (city = 'Greater Noida') => {
     try {
         // Fetch coordinates for Greater Noida
         const response = await fetch(
-            `${WEATHER_API_BASE_URL}/weather?q=${city}&units=metric&appid=${WEATHER_API_KEY}`
+            `${API_BASE_URL}/weather?city=${city}`
         );
 
         if (!response.ok) {
@@ -448,7 +448,7 @@ const testWeatherAPI = async () => {
         const testLon = -74.0060;
         
         const response = await fetch(
-            `${WEATHER_API_BASE_URL}/weather?lat=${testLat}&lon=${testLon}&units=metric&appid=${WEATHER_API_KEY}`
+            `${API_BASE_URL}/weather?lat=${testLat}&lon=${testLon}`
         );
         
         if (!response.ok) {

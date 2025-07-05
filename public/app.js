@@ -4,7 +4,7 @@ const state = {
     viewType: localStorage.getItem('viewType') || 'grid',
     theme: localStorage.getItem('theme') || 'light',
     language: localStorage.getItem('language') || 'en',
-    readLater: JSON.parse(localStorage.getItem('readLater')) || [],
+
     preferences: JSON.parse(localStorage.getItem('preferences')) || {
         sources: [],
         categories: ['general', 'business', 'technology', 'sports'],
@@ -57,7 +57,7 @@ const elements = {
     tickerContent: document.querySelector('.ticker-content'),
     digestContent: document.querySelector('.digest-content'),
     trendingContent: document.querySelector('.trending-content'),
-    readLaterContent: document.querySelector('.read-later-content'),
+
     weatherContent: document.querySelector('.weather-content'),
     newsletterForm: document.getElementById('newsletterForm')
 };
@@ -673,11 +673,17 @@ const searchNews = async (query, filters = {}) => {
 
 const fetchDigest = async () => {
     try {
+        console.log('Fetching digest from:', `${API_BASE_URL}/digest?language=${state.language}`);
         const response = await fetch(`${API_BASE_URL}/digest?language=${state.language}`);
+        console.log('Digest response status:', response.status);
+        
         if (!response.ok) {
-            throw new Error('Failed to fetch digest');
+            const errorData = await response.json();
+            console.error('Digest API error:', errorData);
+            throw new Error(`Failed to fetch digest: ${response.status} ${response.statusText}`);
         }
         const data = await response.json();
+        console.log('Digest data received:', data);
         
         if (!data || Object.keys(data).length === 0) {
             elements.digestContent.innerHTML = `
